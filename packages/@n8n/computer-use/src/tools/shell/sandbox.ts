@@ -118,7 +118,8 @@ export async function spawnShell(
 	if (mode === 'sandboxed') {
 		const { SandboxManager } = await import('@anthropic-ai/sandbox-runtime');
 		const sandboxedCommand = await SandboxManager.wrapWithSandbox(command);
-		return spawn(sandboxedCommand, { shell: true, cwd });
+		const [bin, ...args] = sandboxedCommand.split(' ');
+		return spawn(bin, args, { shell: false, cwd });
 	}
 
 	if (process.platform === 'win32') {
