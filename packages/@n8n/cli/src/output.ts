@@ -164,7 +164,8 @@ function evaluateJq(data: unknown, segments: JqSegment[], startIdx: number): unk
 		switch (seg.type) {
 			case 'field':
 				if (typeof current === 'object' && current !== null) {
-					current = (current as Record<string, unknown>)[seg.name];
+					const obj = current as Record<string, unknown>;
+					current = Object.hasOwn(obj, seg.name) ? obj[seg.name] : undefined;
 				} else {
 					return undefined;
 				}
