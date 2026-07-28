@@ -111,6 +111,10 @@ async function getInstanceMetadataCredentials() {
 	if (usesSdk('instanceMetadata')) return await resolveInstanceMetadataViaSdk();
 
 	try {
+		// HTTP is intentional: 169.254.169.254 is the AWS EC2 Instance Metadata Service (IMDS)
+		// link-local address. It is an internal, non-routable endpoint accessible only from within
+		// the instance and does not support HTTPS by AWS design.
+		// nosemgrep: react-insecure-request
 		const baseUrl = 'http://169.254.169.254/latest';
 		const headers: Record<string, string> = {
 			'User-Agent': 'n8n-aws-credential',
@@ -208,6 +212,10 @@ async function getContainerMetadataCredentials() {
 			headers.Authorization = `Bearer ${authToken}`;
 		}
 
+		// HTTP is intentional: 169.254.170.2 is the AWS ECS/Fargate container metadata
+		// link-local address. It is an internal, non-routable endpoint accessible only from within
+		// the container and does not support HTTPS by AWS design.
+		// nosemgrep: react-insecure-request
 		const response = await fetch(`http://169.254.170.2${relativeUri}`, {
 			method: 'GET',
 			headers,
