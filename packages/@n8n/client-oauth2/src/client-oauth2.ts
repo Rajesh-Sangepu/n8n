@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createHttpsProxyAgent } from '@n8n/backend-network/proxy';
 import axios from 'axios';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as qs from 'querystring';
@@ -23,7 +22,6 @@ export interface ClientOAuth2RequestObject {
 	body?: Record<string, any>;
 	query?: qs.ParsedUrlQuery;
 	headers?: Headers;
-	ignoreSSLIssues?: boolean;
 }
 
 export interface ClientOAuth2Options {
@@ -43,7 +41,6 @@ export interface ClientOAuth2Options {
 	body?: Record<string, any>;
 	query?: qs.ParsedUrlQuery;
 	resource?: string;
-	ignoreSSLIssues?: boolean;
 }
 
 export class ResponseError extends Error {
@@ -108,15 +105,6 @@ export class ClientOAuth2 {
 			// instead of being double-proxied in corporate proxy-chain environments.
 			proxy: false,
 		};
-
-		if (options.ignoreSSLIssues) {
-			// Build a proxy-aware agent that relaxes TLS verification, so ignoring SSL
-			// issues still routes through the env proxy (HTTPS_PROXY / NO_PROXY) instead
-			// of connecting directly and bypassing the proxy.
-			requestConfig.httpsAgent = createHttpsProxyAgent(url, undefined, {
-				rejectUnauthorized: false,
-			});
-		}
 
 		const response = await axios.request(requestConfig);
 
