@@ -302,7 +302,8 @@ for port in "${PORTS[@]}"; do
 	BASE_URLS+=("http://localhost:${port}")
 done
 
-BASE_URL_CSV="$(IFS=,; printf '%s' "${BASE_URLS[*]}")"
+BASE_URL_CSV="$(printf '%s,' "${BASE_URLS[@]}")"
+BASE_URL_CSV="${BASE_URL_CSV%,}"
 
 [[ -f "$ENV_FILE_PATH" ]] || die "Env file not found: $ENV_FILE_PATH"
 
