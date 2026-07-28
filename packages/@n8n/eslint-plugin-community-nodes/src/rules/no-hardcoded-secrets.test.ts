@@ -5,7 +5,7 @@ import { NoHardcodedSecretsRule } from './no-hardcoded-secrets.js';
 const ruleTester = new RuleTester();
 
 // A 40-char hex string (SHA-1 shaped) — a realistic hardcoded secret value.
-const HEX_SECRET = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0';
+const HEX_SECRET = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0'; // nosemgrep: detected-generic-secret
 // A base64/token-shaped value with mixed case, digits and punctuation.
 const TOKEN_SECRET = 'sk-1a2B3c4D5e6F7g8H9i0J-kLmNoP';
 
