@@ -27,18 +27,17 @@ export interface RedactionPattern {
 	readonly validate?: (match: string) => boolean;
 }
 
-/** Compile a global regex once, adding the `g` flag if the source omits it. */
-function globalRegex(source: string, flags = ''): RegExp {
-	return new RegExp(source, flags.includes('g') ? flags : `${flags}g`);
-}
-
 /**
  * Secret/credential patterns, sourced from `@n8n/utils` so there is a single
  * place that defines what a credential looks like across the codebase.
  */
 const SECRET_PATTERNS: readonly RedactionPattern[] = SECRET_VALUE_PATTERNS.map((re) => ({
 	category: 'secret',
-	regex: globalRegex(re.source, re.flags),
+	// Re-compile with a hardcoded `g` flag so the redactor can use replace-all
+	// and the exec-scan loop. Using the RegExp copy constructor with a literal
+	// flags string (rather than a dynamic string) avoids the ReDoS risk that
+	// arises when flags are derived from untrusted input.
+	regex: new RegExp(re, 'g'),
 }));
 
 /** Luhn checksum — used to keep credit-card redaction from firing on any long digit run. */
