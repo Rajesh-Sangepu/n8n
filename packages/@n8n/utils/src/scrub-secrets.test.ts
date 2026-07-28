@@ -170,7 +170,7 @@ describe('scrubSecretsInText', () => {
 	it('redacts a Telegram bot token, including inside a /bot… URL', () => {
 		const url = join(
 			'https://api.telegram.org/bot',
-			'123456789:AAEabcDEFghiJKLmnoPQRstuVWX01234567/sendMessage',
+			'000000000:FAKE_TOKEN_FOR_TESTING_ONLY_NOT_REAL/sendMessage',
 		);
 		expect(scrubSecretsInText(url)).toBe('https://api.telegram.org/[REDACTED]/sendMessage');
 	});
