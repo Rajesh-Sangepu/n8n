@@ -84,10 +84,7 @@ export async function buildAxiosConfigFromLegacyRequest(
 		if (typeof requestObject.body === 'string') {
 			axiosConfig.data = requestObject.body;
 		} else {
-			const allData = Object.assign(requestObject.body || {}, requestObject.form || {}) as Record<
-				string,
-				string
-			>;
+			const allData = { ...requestObject.body, ...requestObject.form } as Record<string, string>;
 			if (requestObject.useQuerystring === true) {
 				axiosConfig.data = stringify(allData, { arrayFormat: 'repeat' });
 			} else {
