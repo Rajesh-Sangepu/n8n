@@ -202,7 +202,7 @@ describe('validateCredentials', () => {
 	describe('Set node validation', () => {
 		it.each([
 			['api_key', 'sk_test_12345'],
-			['access_token', 'ya29.a0AfB_byC...'],
+			['access_token', 'fake-access-token-value'],
 			['password', 'my-secret-password'],
 			['secret', 'top-secret-value'],
 		])('should flag field named "%s"', (fieldName, fieldValue) => {
