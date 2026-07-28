@@ -6,7 +6,7 @@ type ConnectionHandler = (connected: boolean) => void;
 type ErrorHandler = (error: Error) => void;
 
 export interface WebSocketTransportConfig {
-	/** WebSocket URL (ws:// or wss://) */
+	/** WebSocket URL (must use wss:// for secure connections) */
 	url: string;
 
 	/** Enable automatic reconnection (default: true) */
@@ -65,6 +65,9 @@ export class WebSocketTransport implements SyncTransport {
 	private readonly config: Required<WebSocketTransportConfig>;
 
 	constructor(config: WebSocketTransportConfig) {
+		if (!config.url.startsWith('wss://')) {
+			throw new Error('Insecure WebSocket URL rejected: only wss:// connections are allowed.');
+		}
 		this.config = {
 			url: config.url,
 			reconnect: config.reconnect ?? true,
