@@ -41,7 +41,7 @@ const apiKey = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 const config = { clientSecret: 'sk-1a2B3c4D5e6F7g8H9i0J-kLmNoP' };
 
 class MyNode {
-  private authToken = 'ghp_1a2B3c4D5e6F7g8H9i0J0k1L2m3N4o5P6q7R';
+  private authToken = 'ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 }
 ```
 
