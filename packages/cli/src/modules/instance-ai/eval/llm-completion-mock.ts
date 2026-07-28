@@ -92,6 +92,21 @@ function truncate(text: string): string {
 	return text.length > TRANSCRIPT_ITEM_MAX ? `${text.slice(0, TRANSCRIPT_ITEM_MAX)}…` : text;
 }
 
+/**
+ * Sanitize a user-supplied string before it is interpolated into the prompt
+ * that drives `agent.generate()`.  Removes null bytes (which can be used to
+ * truncate or confuse downstream parsers) and enforces a hard length cap so
+ * that arbitrarily large inputs cannot be used to inject adversarial
+ * instructions into the generated prompt (prompt-injection / SSRF via prompt).
+ */
+const USER_INPUT_MAX = 8_000;
+
+function sanitizeUserInput(value: string): string {
+	// eslint-disable-next-line no-control-regex
+	const stripped = value.replace(/\x00/g, '');
+	return stripped.length > USER_INPUT_MAX ? `${stripped.slice(0, USER_INPUT_MAX)}…` : stripped;
+}
+
 /** Flatten chat/responses message content (string or content-part array) to text. */
 function contentToString(content: unknown): string {
 	if (typeof content === 'string') return content;
@@ -172,7 +187,7 @@ function buildUserPrompt(
 
 	const sections: string[] = [
 		'## Conversation so far',
-		summary.transcript || '(empty — this is the first turn)',
+		summary.transcript ? sanitizeUserInput(summary.transcript) : '(empty — this is the first turn)',
 		'',
 		'## Tools the agent may call',
 		toolList,
@@ -194,9 +209,11 @@ function buildUserPrompt(
 			JSON.stringify(outputSchema),
 		);
 	}
-	if (options?.globalContext) sections.push('', '## Data context', options.globalContext);
-	if (nodeHint) sections.push('', '## Node hint', nodeHint);
-	if (options?.scenarioHints) sections.push('', '## Scenario', options.scenarioHints);
+	if (options?.globalContext)
+		sections.push('', '## Data context', sanitizeUserInput(options.globalContext));
+	if (nodeHint) sections.push('', '## Node hint', sanitizeUserInput(nodeHint));
+	if (options?.scenarioHints)
+		sections.push('', '## Scenario', sanitizeUserInput(options.scenarioHints));
 	return sections.join('\n');
 }
 
