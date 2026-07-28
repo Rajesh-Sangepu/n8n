@@ -36,7 +36,7 @@ const apiKey = credentials.apiKey;
 ### ❌ Incorrect
 
 ```typescript
-const apiKey = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0';
+const apiKey = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 
 const config = { clientSecret: 'sk-1a2B3c4D5e6F7g8H9i0J-kLmNoP' };
 
