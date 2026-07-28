@@ -122,8 +122,7 @@ describe('SignupView', () => {
 	});
 
 	it('should validate signup token with JWT token', async () => {
-		const mockToken =
-			'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnZpdGVySWQiOiIxMjMiLCJpbnZpdGVlSWQiOiI0NTYifQ.test';
+		const mockToken = 'test-jwt-signup-token';
 		route.query.token = mockToken;
 
 		usersStore.validateSignupToken.mockResolvedValueOnce({
@@ -153,8 +152,7 @@ describe('SignupView', () => {
 	});
 
 	it('should accept invitation with JWT token', async () => {
-		const mockToken =
-			'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnZpdGVySWQiOiIxMjMiLCJpbnZpdGVlSWQiOiI0NTYifQ.test';
+		const mockToken = 'test-jwt-invite-token';
 		// beforeEach already clears the query, so we just set what we need
 		route.query.token = mockToken;
 
