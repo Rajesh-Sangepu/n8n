@@ -1,7 +1,7 @@
 import { isRecord } from '@n8n/utils/is-record';
 import { createHash } from 'crypto';
 import { existsSync, lstatSync, readdirSync, readFileSync, statSync } from 'fs';
-import { basename, dirname, join, posix, relative } from 'path';
+import { basename, dirname, join, posix, relative, resolve, sep } from 'path';
 
 import {
 	RUNTIME_SKILL_FILE_NAME,
@@ -109,10 +109,17 @@ export function loadRuntimeSkillSourceFromDirectory(
 			const linkedFile = findLinkedFile(skill.linkedFiles, normalizedPath);
 			if (!linkedFile) return await Promise.resolve(null);
 
+			const absoluteSkillDir = resolve(skill.directory);
+			const absoluteFilePath = resolve(absoluteSkillDir, normalizedPath);
+			const confinementPrefix = absoluteSkillDir.endsWith(sep)
+				? absoluteSkillDir
+				: absoluteSkillDir + sep;
+			if (!absoluteFilePath.startsWith(confinementPrefix)) return await Promise.resolve(null);
+
 			return await Promise.resolve({
 				skillId,
 				filePath: normalizedPath,
-				content: readFileSync(join(skill.directory, normalizedPath), 'utf-8'),
+				content: readFileSync(absoluteFilePath, 'utf-8'),
 				bytes: linkedFile.bytes,
 				sha256: linkedFile.sha256,
 			});
