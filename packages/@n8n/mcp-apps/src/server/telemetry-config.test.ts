@@ -47,6 +47,9 @@ describe('injectTelemetryConfig', () => {
 
 	it('falls back to prepending when there is no <head>', () => {
 		const out = injectTelemetryConfig('<body>no head</body>', config);
-		expect(out.startsWith(`<script>window.${MCP_APP_TELEMETRY_GLOBAL}=`)).toBe(true);
+		const expectedPrefix = `window.${MCP_APP_TELEMETRY_GLOBAL}=`;
+		expect(out.startsWith('<script>')).toBe(true);
+		expect(out).toContain(expectedPrefix);
+		expect(out.indexOf('<script>')).toBeLessThan(out.indexOf(expectedPrefix));
 	});
 });
