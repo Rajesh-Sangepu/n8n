@@ -85,8 +85,8 @@ export class LiveWebhooks implements IWebhookManager {
 
 		this.logger.debug(`Received webhook "${httpMethod}" for path "${path}"`);
 
-		// Reset request parameters
-		request.params = {} as WebhookRequest['params'];
+		// Reset request parameters using a null-prototype object to prevent prototype pollution
+		request.params = Object.create(null) as WebhookRequest['params'];
 
 		const webhook = await this.findWebhook(path, httpMethod);
 
@@ -96,10 +96,14 @@ export class LiveWebhooks implements IWebhookManager {
 			const pathElements = path.split('/').slice(1);
 
 			// extracting params from path
+			const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 			webhook.webhookPath.split('/').forEach((ele, index) => {
 				if (ele.startsWith(':')) {
+					const paramKey = ele.slice(1);
+					// Reject prototype-polluting or empty keys to prevent remote property injection
+					if (paramKey === '' || UNSAFE_KEYS.has(paramKey)) return;
 					// write params to req.params
-					request.params[ele.slice(1)] = pathElements[index];
+					request.params[paramKey] = pathElements[index];
 				}
 			});
 		}
